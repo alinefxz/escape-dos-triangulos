@@ -8,5 +8,45 @@
         "pontos": 30,
         "tempo": 3,
         "mortes": 0
+    },
+    "ALINEFERNAND": {
+        "pontos": 785,
+        "tempo": 57,
+        "mortes": 3
+    },
+    "ALINEO": {
+        "pontos": 970,
+        "tempo": 112,
+        "mortes": 27
+    },
+    "ABC": {
+        "pontos": 1100,
+        "tempo": 96,
+        "mortes": 20
+    },
+    "DEF": {
+        "pontos": 1620,
+        "tempo": 84,
+        "mortes": 10
+    },
+    "BNBN": {
+        "pontos": 2310,
+        "tempo": 106,
+        "mortes": 12
+    },
+    "BNBNNNN": {
+        "pontos": 2895,
+        "tempo": 181,
+        "mortes": 37
+    },
+    "ALINEOLIV": {
+        "pontos": 1515,
+        "tempo": 65,
+        "mortes": 3
+    },
+    "LIVIAM": {
+        "pontos": 6145,
+        "tempo": 429,
+        "mortes": 105
     }
 }

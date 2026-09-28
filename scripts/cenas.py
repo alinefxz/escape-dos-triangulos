@@ -38,9 +38,10 @@ class Menu:
         y_pos = 140
         botoes = []
         
-        if dados_jogo["jogo_em_andamento"] and dados_jogo["nome"]:
-            btn_retomar = Botao(self.tela, "RETOMAR", "centro", y_pos, 30, (20, 20, 20), (0, 255, 0))
-            botoes.append(('partida', btn_retomar))
+        # Se já existe um jogador salvo, exibe o botão de continuar personalizado
+        if dados_jogo["nome"]:
+            btn_continuar = Botao(self.tela, f"CONTINUAR COMO {dados_jogo['nome']}", "centro", y_pos, 28, (20, 20, 20), (0, 255, 0))
+            botoes.append(('partida', btn_continuar))
             y_pos += 60
 
         btn_jogar = Botao(self.tela, "NOVO JOGO", "centro", y_pos, 30, (20, 20, 20), (255, 20, 147))
@@ -48,7 +49,7 @@ class Menu:
         y_pos += 60
 
         if dados_jogo["nome"]:
-            btn_trocar = Botao(self.tela, f"JOGADOR: {dados_jogo['nome']} (TROCAR)", "centro", y_pos, 25, (20, 20, 20), (255, 165, 0))
+            btn_trocar = Botao(self.tela, "TROCAR JOGADOR", "centro", y_pos, 25, (20, 20, 20), (255, 165, 0))
             botoes.append(('nome_input', btn_trocar))
             y_pos += 60
 
@@ -60,6 +61,8 @@ class Menu:
             if botao.get_click(eventos):
                 if proxima_cena == 'nome_input':
                     dados_jogo["jogo_em_andamento"] = False
+                elif proxima_cena == 'partida':
+                    dados_jogo["jogo_em_andamento"] = True
                 return proxima_cena
             
         return 'menu'
@@ -86,10 +89,7 @@ class TelaNome:
             dados_jogo["mortes"] = 0 
             dados_jogo["fase_salva"] = 1
             dados_jogo["jogo_em_andamento"] = True
-            
-            # Reseta os dados da partida diretamente aqui para evitar erros no main.py
-            global instancia_partida_refeita
-            return 'partida'
+            return 'partida_reiniciar'
             
         if self.botao_voltar.get_click(eventos):
             return 'menu'
@@ -101,7 +101,7 @@ class Partida:
         self.jogador = Jogador(tela, 100, 270)
         self.fase_atual = 1
         self.texto_hud = Texto(self.tela, "", 10, 10, (255, 255, 255), 20)
-        self.texto_dicas = Texto(self.tela, "Atalhos: [R] Reiniciar  |  [M] Voltar ao Menu", 10, 35, (150, 150, 150), 16)
+        self.texto_dicas = Texto(self.tela, "Atalhos: [R] Reiniciar  |  [M] Menu  |  [ESC] Pausa", 10, 35, (150, 150, 150), 16)
         self.reiniciar_fase()
 
     def reiniciar_fase(self, nova_partida=False):
@@ -137,9 +137,10 @@ class Partida:
                 (Buraco, 2900, 120), (Bloco, 3400), (Plataforma, 3800, 240, 100), (Buraco, 3800, 100),
                 (Triangulo, 4400), (Triangulo, 4430), (Triangulo, 4460), 
                 (Plataforma, 5000, 240, 120), (Triangulo, 5030), (Triangulo, 5060),
-                (Bloco, 5600), (Buraco, 6000, 140), (Bloco, 6200)
+                (Bloco, 5600), (Buraco, 6000, 140), 
+                (Bloco, 6450) 
             ]
-            fim = 6600
+            fim = 6900
 
         elif self.fase_atual == 4:
             layout = [
@@ -158,20 +159,31 @@ class Partida:
             layout = [
                 (Bloco, 800), (Buraco, 830, 150), (Plataforma, 920, 240, 60),
                 (Triangulo, 1350), (Triangulo, 1380), (Triangulo, 1410),
-                (Plataforma, 1800, 240, 250), (Triangulo, 1920, 240), 
-                (Buraco, 1800, 250), 
-                (Bloco, 2400), (Bloco, 2430), (Triangulo, 2460),
-                (Buraco, 2900, 250), (Plataforma, 2950, 240, 50), (Plataforma, 3080, 240, 50), 
-                (Triangulo, 3500), (Triangulo, 3530), (Triangulo, 3560), (Triangulo, 3590),
-                (Bloco, 4000), 
-                (Plataforma, 4300, 240, 400), (Triangulo, 4450, 240), (Triangulo, 4600, 240),
-                (Buraco, 4300, 400),
-                (Triangulo, 5100), (Triangulo, 5130), (Triangulo, 5160),
-                (Plataforma, 5600, 230, 80), (Triangulo, 5620), (Triangulo, 5650),
-                (Buraco, 6100, 200), (Plataforma, 6150, 240, 60),
-                (Bloco, 6600), (Buraco, 6630, 160), (Triangulo, 6950) 
+                
+                # 1ª Plataforma longa
+                (Plataforma, 1800, 240, 350), (Triangulo, 2050, 240), 
+                (Buraco, 1800, 350), 
+                
+                (Bloco, 2600), (Bloco, 2630), (Triangulo, 2660),
+                (Buraco, 3100, 250), (Plataforma, 3150, 240, 50), (Plataforma, 3280, 240, 50), 
+                (Triangulo, 3700), (Triangulo, 3730), (Triangulo, 3760), (Triangulo, 3790),
+                (Bloco, 4200), 
+                
+                # ESCADINHA DE PLATAFORMAS (Subida suave com pulos consecutivos)
+                (Plataforma, 4400, 270, 70),  # Degrau 1 (Mais baixo)
+                (Plataforma, 4750, 255, 70),  # Degrau 2 (Médio)
+                (Plataforma, 5100, 240, 300), # Plataforma Principal (Alta) com os dois triângulos
+                (Triangulo, 5250, 240), 
+                (Triangulo, 5380, 240),
+                (Buraco, 4400, 950),          # Buraco cobrindo a área da escadinha até a descida
+                
+                # Continuação após descer da plataforma
+                (Triangulo, 5800), (Triangulo, 5830), (Triangulo, 5860),
+                (Plataforma, 6300, 230, 80), (Triangulo, 6320), (Triangulo, 6350),
+                (Buraco, 6800, 200), (Plataforma, 6850, 240, 60),
+                (Bloco, 7300), (Buraco, 7330, 160), (Triangulo, 7650) 
             ]
-            fim = 7400
+            fim = 8100 # Linha de chegada ajustada para o final do percurso
             
         for Tipo, x, *args in layout:
             if Tipo == Plataforma:
@@ -218,6 +230,10 @@ class Partida:
                     self.salvar_ranking()
                     dados_jogo["fase_salva"] = self.fase_atual
                     return 'menu'
+                elif evento.key == pygame.K_ESCAPE:
+                    self.salvar_ranking()
+                    dados_jogo["fase_salva"] = self.fase_atual
+                    return 'pausa'
 
         plataformas = [obs for obs in self.obstaculos if isinstance(obs, Plataforma)]
         self.jogador.atualizar(plataformas)
@@ -265,7 +281,7 @@ class Partida:
                 self.salvar_ranking()
                 dados_jogo["jogo_em_andamento"] = False 
                 self.fase_atual = 1
-                return 'ranking'
+                return 'vitoria'
 
         return 'partida'
 
@@ -299,3 +315,62 @@ class TelaRanking:
             return 'menu'
             
         return 'ranking'
+
+class TelaPausa:
+    def __init__(self, tela):
+        self.tela = tela
+        self.titulo = Texto(tela, "JOGO PAUSADO", "centro", 80, (255, 165, 0), 50)
+        self.btn_resumir = Botao(tela, "RESUMIR", "centro", 180, 30, (20, 20, 20), (0, 255, 0))
+        self.btn_reiniciar = Botao(tela, "REINICIAR FASE", "centro", 240, 30, (20, 20, 20), (255, 20, 147))
+        self.btn_menu = Botao(tela, "VOLTAR AO MENU", "centro", 300, 30, (20, 20, 20), (0, 255, 255))
+
+    def atualizar(self, eventos):
+        self.titulo.desenhar()
+        self.btn_resumir.desenhar()
+        self.btn_reiniciar.desenhar()
+        self.btn_menu.desenhar()
+        
+        for evento in eventos:
+            if evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
+                return 'partida_resumir' # Volta rápido ao jogo usando o mesmo botão
+
+        if self.btn_resumir.get_click(eventos):
+            return 'partida_resumir'
+        if self.btn_reiniciar.get_click(eventos):
+            return 'partida'
+        if self.btn_menu.get_click(eventos):
+            return 'menu'
+            
+        return 'pausa'
+
+class TelaVitoria:
+    def __init__(self, tela):
+        self.tela = tela
+        self.titulo = Texto(tela, "VITÓRIA!", "centro", 60, (0, 255, 0), 60)
+        self.fonte_stats = pygame.font.SysFont("Arial", 25)
+        self.btn_ranking = Botao(tela, "VER RANKING", "centro", 260, 30, (20, 20, 20), (0, 255, 255))
+        self.btn_menu = Botao(tela, "MENU PRINCIPAL", "centro", 320, 30, (20, 20, 20), (255, 20, 147))
+
+    def atualizar(self, eventos):
+        self.titulo.desenhar()
+        
+        # Exibir as estatísticas finais do jogador
+        tempo = dados_jogo['tempo_frames'] // 60
+        stats1 = f"Parabéns, {dados_jogo['nome']}! Você escapou!"
+        stats2 = f"Pontos: {dados_jogo['pontos']}  |  Mortes: {dados_jogo['mortes']}  |  Tempo Final: {tempo}s"
+        
+        txt_surf1 = self.fonte_stats.render(stats1, True, (255, 255, 255))
+        txt_surf2 = self.fonte_stats.render(stats2, True, (255, 255, 255))
+        
+        self.tela.blit(txt_surf1, (self.tela.get_width() // 2 - txt_surf1.get_width() // 2, 130))
+        self.tela.blit(txt_surf2, (self.tela.get_width() // 2 - txt_surf2.get_width() // 2, 170))
+
+        self.btn_ranking.desenhar()
+        self.btn_menu.desenhar()
+
+        if self.btn_ranking.get_click(eventos):
+            return 'ranking'
+        if self.btn_menu.get_click(eventos):
+            return 'menu'
+            
+        return 'vitoria'

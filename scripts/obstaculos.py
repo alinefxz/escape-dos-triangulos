@@ -49,7 +49,10 @@ class Bloco:
         pygame.draw.rect(self.tela, (255, 255, 255), self.rect, 2)
 
     def detectarColisao(self, rectJogador):
-        return rectJogador.colliderect(self.rect)
+        if rectJogador.colliderect(self.rect):
+            if rectJogador.bottom > self.rect.top + 15:
+                return True
+        return False
 
 
 class Buraco:
