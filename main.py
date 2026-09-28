@@ -1,43 +1,44 @@
-"""Ponto de entrada do jogo Nem Tão Logo Ali."""
-
-import os
-
-os.environ.setdefault("SDL_VIDEO_CENTERED", "1")
-
 import pygame
+from scripts.cenas import Partida, Menu, TelaNome, TelaRanking
 
-from scripts.assets import pre_carregar
-from scripts.cenas import Jogo
-from scripts.config import FPS, ALTURA, LARGURA
+pygame.init()
 
+tamanhoTela = [800, 400]
+tela = pygame.display.set_mode(tamanhoTela)
+pygame.display.set_caption("Escape dos Triângulos")
+relogio = pygame.time.Clock()
+corFundo = (15, 15, 20)
 
-def main():
-    pygame.init()
-    tela = pygame.display.set_mode((LARGURA, ALTURA))
-    pygame.display.set_caption("Nem Tão Logo Ali")
-    pre_carregar()
-    jogo = Jogo(tela)
-    relogio = pygame.time.Clock()
-    executando = True
+# Instanciando todas as cenas
+listaCenas = {
+    'menu': Menu(tela),
+    'nome_input': TelaNome(tela),
+    'partida': Partida(tela),
+    'ranking': TelaRanking(tela)
+}
 
-    while executando:
-        dt = min(relogio.tick(FPS) / 1000.0, 0.05)
-        eventos = pygame.event.get()
-        if any(evento.type == pygame.QUIT for evento in eventos):
-            break
-        teclas = pygame.key.get_pressed()
-        cena = jogo.cenas[jogo.cena_atual]
-        proxima = cena.atualizar(dt, teclas, eventos)
-        if proxima:
-            if proxima == "sair":
-                break
-            jogo.trocar_cena(proxima)
-        tela.fill((20, 30, 45))
-        jogo.cenas[jogo.cena_atual].desenhar(tela)
-        pygame.display.flip()
+cenaAtual = 'menu'
 
-    pygame.quit()
+while True:
+    # Captura a lista de eventos
+    eventos = pygame.event.get()
+    
+    for e in eventos:
+        if e.type == pygame.QUIT:
+            pygame.quit()
+            exit()
 
+    tela.fill(corFundo)
 
-if __name__ == "__main__":
-    main()
+    # Passamos os eventos para a cena tratar cliques e digitação
+    proxima_cena = listaCenas[cenaAtual].atualizar(eventos)
+    
+    # Se a cena mudou, atualiza a variável cenaAtual
+    if proxima_cena != cenaAtual:
+        # Se voltamos pro jogo, garantimos que a partida inicie limpa
+        if proxima_cena == 'partida':
+            listaCenas['partida'].reiniciar_fase() # Correção feita aqui!
+        cenaAtual = proxima_cena
+
+    relogio.tick(60)
+    pygame.display.flip()
