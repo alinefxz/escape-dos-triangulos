@@ -1,5 +1,5 @@
 import pygame
-from scripts.cenas import Partida, Menu, TelaNome, TelaRanking, TelaPausa, TelaVitoria
+from scripts.cenas import Partida, Menu, TelaNome, TelaRanking, TelaPausa, TelaVitoria, dados_jogo
 
 pygame.init()
 
@@ -9,7 +9,6 @@ pygame.display.set_caption("Escape dos Triângulos")
 relogio = pygame.time.Clock()
 corFundo = (15, 15, 20)
 
-# Telas novas adicionadas no dicionário
 listaCenas = {
     'menu': Menu(tela),
     'nome_input': TelaNome(tela),
@@ -33,8 +32,15 @@ while True:
 
     proxima_cena = listaCenas[cenaAtual].atualizar(eventos)
     
-    # Adicionada a regra 'partida_resumir' para tirar do pause sem reiniciar a fase
-    if proxima_cena == 'partida_reiniciar':
+    # Tratamento do clique no botão de teste direto da Fase 5
+    if proxima_cena == 'fase_5_direto':
+        dados_jogo["nome"] = "TESTE"
+        dados_jogo["fase_salva"] = 5
+        dados_jogo["jogo_em_andamento"] = True
+        listaCenas['partida'].fase_atual = 5
+        listaCenas['partida'].reiniciar_fase()
+        cenaAtual = 'partida'
+    elif proxima_cena == 'partida_reiniciar':
         listaCenas['partida'].reiniciar_fase(nova_partida=True)
         cenaAtual = 'partida'
     elif proxima_cena == 'partida_resumir':

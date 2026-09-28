@@ -1,8 +1,8 @@
 {
     "ALINE": {
-        "pontos": 2195,
-        "tempo": 118,
-        "mortes": 19
+        "pontos": 2425,
+        "tempo": 107,
+        "mortes": 10
     },
     "ALINEF": {
         "pontos": 30,
@@ -45,8 +45,33 @@
         "mortes": 3
     },
     "LIVIAM": {
-        "pontos": 6145,
-        "tempo": 429,
-        "mortes": 105
+        "pontos": 7530,
+        "tempo": 500,
+        "mortes": 120
+    },
+    "ALIN": {
+        "pontos": 1670,
+        "tempo": 72,
+        "mortes": 4
+    },
+    "LINE": {
+        "pontos": 1415,
+        "tempo": 58,
+        "mortes": 1
+    },
+    "MN": {
+        "pontos": 1625,
+        "tempo": 68,
+        "mortes": 3
+    },
+    "LIVIAA": {
+        "pontos": 1860,
+        "tempo": 80,
+        "mortes": 6
+    },
+    "TESTE": {
+        "pontos": 445,
+        "tempo": 20,
+        "mortes": 3
     }
 }

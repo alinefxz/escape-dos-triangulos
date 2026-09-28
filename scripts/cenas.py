@@ -35,26 +35,30 @@ class Menu:
     def atualizar(self, eventos):
         self.titulo.desenhar()
         
-        y_pos = 140
+        y_pos = 130
         botoes = []
         
-        # Se já existe um jogador salvo, exibe o botão de continuar personalizado
         if dados_jogo["nome"]:
-            btn_continuar = Botao(self.tela, f"CONTINUAR COMO {dados_jogo['nome']}", "centro", y_pos, 28, (20, 20, 20), (0, 255, 0))
+            btn_continuar = Botao(self.tela, f"CONTINUAR COMO {dados_jogo['nome']}", "centro", y_pos, 25, (20, 20, 20), (0, 255, 0))
             botoes.append(('partida', btn_continuar))
-            y_pos += 60
+            y_pos += 50
 
-        btn_jogar = Botao(self.tela, "NOVO JOGO", "centro", y_pos, 30, (20, 20, 20), (255, 20, 147))
+        btn_jogar = Botao(self.tela, "NOVO JOGO", "centro", y_pos, 25, (20, 20, 20), (255, 20, 147))
         botoes.append(('nome_input', btn_jogar))
-        y_pos += 60
+        y_pos += 50
 
         if dados_jogo["nome"]:
-            btn_trocar = Botao(self.tela, "TROCAR JOGADOR", "centro", y_pos, 25, (20, 20, 20), (255, 165, 0))
+            btn_trocar = Botao(self.tela, "TROCAR JOGADOR", "centro", y_pos, 22, (20, 20, 20), (255, 165, 0))
             botoes.append(('nome_input', btn_trocar))
-            y_pos += 60
+            y_pos += 50
 
-        btn_ranking = Botao(self.tela, "RANKING", "centro", y_pos, 30, (20, 20, 20), (0, 255, 255))
+        btn_ranking = Botao(self.tela, "RANKING", "centro", y_pos, 25, (20, 20, 20), (0, 255, 255))
         botoes.append(('ranking', btn_ranking))
+        y_pos += 50
+
+        # BOTÃO VISÍVEL DE ATALHO PARA A FASE 5
+        btn_teste_fase5 = Botao(self.tela, "TESTAR FASE 5 (DIRETO)", "centro", y_pos, 22, (20, 20, 20), (255, 255, 0))
+        botoes.append(('fase_5_direto', btn_teste_fase5))
 
         for proxima_cena, botao in botoes:
             botao.desenhar()
@@ -169,21 +173,23 @@ class Partida:
                 (Triangulo, 3700), (Triangulo, 3730), (Triangulo, 3760), (Triangulo, 3790),
                 (Bloco, 4200), 
                 
-                # ESCADINHA DE PLATAFORMAS (Subida suave com pulos consecutivos)
-                (Plataforma, 4400, 270, 70),  # Degrau 1 (Mais baixo)
-                (Plataforma, 4750, 255, 70),  # Degrau 2 (Médio)
-                (Plataforma, 5100, 240, 300), # Plataforma Principal (Alta) com os dois triângulos
-                (Triangulo, 5250, 240), 
-                (Triangulo, 5380, 240),
-                (Buraco, 4400, 950),          # Buraco cobrindo a área da escadinha até a descida
+                # ESCADINHA COM ESPAÇAMENTO PRECISO PARA VELOCIDADE 12
+                (Buraco, 4300, 200),         # Buraco inicial
+                (Plataforma, 4500, 275, 60),  # Degrau 1
+                (Plataforma, 4930, 255, 60),  # Degrau 2 (distância calibrada para o salto longo)
+                (Plataforma, 5360, 235, 60),  # Degrau 3 (distância calibrada)
+                (Plataforma, 5790, 220, 300), # Plataforma Principal com os dois triângulos
+                (Triangulo, 5950, 220), 
+                (Triangulo, 6130, 220),
+                (Buraco, 4500, 1400),         # Buraco cobrindo a área da escadinha
                 
-                # Continuação após descer da plataforma
-                (Triangulo, 5800), (Triangulo, 5830), (Triangulo, 5860),
-                (Plataforma, 6300, 230, 80), (Triangulo, 6320), (Triangulo, 6350),
-                (Buraco, 6800, 200), (Plataforma, 6850, 240, 60),
-                (Bloco, 7300), (Buraco, 7330, 160), (Triangulo, 7650) 
+                # Percurso após a descida da escada
+                (Triangulo, 6600), (Triangulo, 6630), (Triangulo, 6660),
+                (Plataforma, 7100, 230, 80), (Triangulo, 7120), (Triangulo, 7150),
+                (Buraco, 7600, 200), (Plataforma, 7650, 240, 60),
+                (Bloco, 8100), (Buraco, 8130, 160), (Triangulo, 8450) 
             ]
-            fim = 8100 # Linha de chegada ajustada para o final do percurso
+            fim = 8800
             
         for Tipo, x, *args in layout:
             if Tipo == Plataforma:
