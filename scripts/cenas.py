@@ -173,24 +173,24 @@ class Partida:
                 (Triangulo, 3700), (Triangulo, 3730), (Triangulo, 3760), (Triangulo, 3790),
                 (Bloco, 4200), 
                 
-                # ESCADINHA COM ESPAÇAMENTO PRECISO PARA VELOCIDADE 12
+                # ESCADINHA COM O TERCEIRO DEGRAU MAIS AFASTADO À DIREITA
                 (Buraco, 4300, 200),         # Buraco inicial
                 (Plataforma, 4500, 275, 60),  # Degrau 1
-                (Plataforma, 4930, 255, 60),  # Degrau 2 (distância calibrada para o salto longo)
-                (Plataforma, 5360, 235, 60),  # Degrau 3 (distância calibrada)
-                (Plataforma, 5790, 220, 300), # Plataforma Principal com os dois triângulos
-                (Triangulo, 5950, 220), 
-                (Triangulo, 6130, 220),
-                (Buraco, 4500, 1400),         # Buraco cobrindo a área da escadinha
+                (Plataforma, 4820, 255, 60),  # Degrau 2
+                (Plataforma, 5220, 235, 60),  # Degrau 3 (afastado um pouco mais para a direita)
+                (Plataforma, 5580, 220, 300), # Plataforma Principal ajustada proporcionalmente
+                (Triangulo, 5740, 220), 
+                (Triangulo, 5920, 220),
+                (Buraco, 4500, 1250),         # Buraco cobrindo toda a área expandida da escadinha
                 
                 # Percurso após a descida da escada
-                (Triangulo, 6600), (Triangulo, 6630), (Triangulo, 6660),
-                (Plataforma, 7100, 230, 80), (Triangulo, 7120), (Triangulo, 7150),
-                (Buraco, 7600, 200), (Plataforma, 7650, 240, 60),
-                (Bloco, 8100), (Buraco, 8130, 160), (Triangulo, 8450) 
+                (Triangulo, 6430), (Triangulo, 6460), (Triangulo, 6490),
+                (Plataforma, 6930, 230, 80), (Triangulo, 6950), (Triangulo, 6980),
+                (Buraco, 7430, 200), (Plataforma, 7480, 240, 60),
+                (Bloco, 7930), (Buraco, 7960, 160), (Triangulo, 8280) 
             ]
-            fim = 8800
-            
+            fim = 8530
+
         for Tipo, x, *args in layout:
             if Tipo == Plataforma:
                 self.obstaculos.append(Plataforma(self.tela, x, args[0], args[1], velocidade=vel_fase))
@@ -338,7 +338,7 @@ class TelaPausa:
         
         for evento in eventos:
             if evento.type == pygame.KEYDOWN and evento.key == pygame.K_ESCAPE:
-                return 'partida_resumir' # Volta rápido ao jogo usando o mesmo botão
+                return 'partida_resumir'
 
         if self.btn_resumir.get_click(eventos):
             return 'partida_resumir'
@@ -360,7 +360,6 @@ class TelaVitoria:
     def atualizar(self, eventos):
         self.titulo.desenhar()
         
-        # Exibir as estatísticas finais do jogador
         tempo = dados_jogo['tempo_frames'] // 60
         stats1 = f"Parabéns, {dados_jogo['nome']}! Você escapou!"
         stats2 = f"Pontos: {dados_jogo['pontos']}  |  Mortes: {dados_jogo['mortes']}  |  Tempo Final: {tempo}s"
