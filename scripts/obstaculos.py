@@ -1,9 +1,10 @@
 import pygame
 
+
 class Triangulo:
     def __init__(self, tela, x, chao_y, velocidade=8):
         self.tela = tela
-        self.x = x
+        self.x = float(x)
         self.largura = 30
         self.altura = 30
         self.chao_y = chao_y
@@ -16,7 +17,12 @@ class Triangulo:
         self.p1 = (self.x + self.largura / 2, self.chao_y - self.altura)
         self.p2 = (self.x, self.chao_y)
         self.p3 = (self.x + self.largura, self.chao_y)
-        self.rect = pygame.Rect(self.x + 5, self.chao_y - self.altura + 5, self.largura - 10, self.altura - 5)
+        self.rect = pygame.Rect(
+            round(self.x + 5),
+            self.chao_y - self.altura + 5,
+            self.largura - 10,
+            self.altura - 5,
+        )
 
     def atualizar(self):
         self.x -= self.velocidade
@@ -33,62 +39,60 @@ class Triangulo:
 class Bloco:
     def __init__(self, tela, x, chao_y, velocidade=8):
         self.tela = tela
-        self.x = x
+        self.x = float(x)
         self.tamanho = 30
         self.chao_y = chao_y
         self.velocidade = velocidade
         self.passou = False
-        self.rect = pygame.Rect(self.x, self.chao_y - self.tamanho, self.tamanho, self.tamanho)
+        self.rect = pygame.Rect(round(self.x), self.chao_y - self.tamanho, self.tamanho, self.tamanho)
 
     def atualizar(self):
         self.x -= self.velocidade
-        self.rect.x = self.x
+        self.rect.x = round(self.x)
 
     def desenhar(self):
         pygame.draw.rect(self.tela, (0, 255, 255), self.rect)
         pygame.draw.rect(self.tela, (255, 255, 255), self.rect, 2)
 
     def detectarColisao(self, rectJogador):
-        if rectJogador.colliderect(self.rect):
-            if rectJogador.bottom > self.rect.top + 15:
-                return True
-        return False
+        return rectJogador.colliderect(self.rect) and rectJogador.bottom > self.rect.top + 15
 
 
 class Buraco:
     def __init__(self, tela, x, chao_y, largura=70, velocidade=8):
         self.tela = tela
-        self.x = x
+        self.x = float(x)
         self.chao_y = chao_y
         self.largura = largura
         self.velocidade = velocidade
         self.passou = False
-        self.rect = pygame.Rect(self.x, self.chao_y, self.largura, 10)
+        self.rect = pygame.Rect(round(self.x), self.chao_y, self.largura, 10)
 
     def atualizar(self):
         self.x -= self.velocidade
-        self.rect.x = self.x
+        self.rect.x = round(self.x)
 
     def desenhar(self):
-        pygame.draw.rect(self.tela, (15, 15, 20), (self.x, self.chao_y - 2, self.largura, 6))
+        pygame.draw.rect(self.tela, (15, 15, 20), (round(self.x), self.chao_y - 2, self.largura, 6))
 
     def detectarColisao(self, rectJogador):
-        if rectJogador.bottom >= self.chao_y and self.x < rectJogador.centerx < self.x + self.largura:
-            return True
-        return False
+        return (
+            rectJogador.bottom >= self.chao_y
+            and self.x < rectJogador.centerx < self.x + self.largura
+        )
 
 
 class LinhaChegada:
     def __init__(self, tela, x, chao_y, velocidade=8):
         self.tela = tela
-        self.x = x
+        self.x = float(x)
         self.chao_y = chao_y
         self.velocidade = velocidade
-        self.rect = pygame.Rect(self.x, self.chao_y - 100, 20, 100)
+        self.rect = pygame.Rect(round(self.x), self.chao_y - 100, 20, 100)
 
     def atualizar(self):
         self.x -= self.velocidade
-        self.rect.x = self.x
+        self.rect.x = round(self.x)
 
     def desenhar(self):
         pygame.draw.rect(self.tela, (0, 255, 255), self.rect)
@@ -98,24 +102,32 @@ class LinhaChegada:
 class Plataforma:
     def __init__(self, tela, x, y, largura, velocidade=8):
         self.tela = tela
-        self.x = x
+        self.x = float(x)
         self.y = y
         self.largura = largura
         self.altura = 20
         self.velocidade = velocidade
         self.passou = False
-        self.rect = pygame.Rect(self.x, self.y, self.largura, self.altura)
+        self.rect = pygame.Rect(round(self.x), self.y, self.largura, self.altura)
 
     def atualizar(self):
         self.x -= self.velocidade
-        self.rect.x = self.x
+        self.rect.x = round(self.x)
 
     def desenhar(self):
         pygame.draw.rect(self.tela, (148, 0, 211), self.rect)
         pygame.draw.rect(self.tela, (255, 255, 255), self.rect, 2)
 
-    def detectarColisao(self, rectJogador):
-        if rectJogador.colliderect(self.rect):
-            if rectJogador.bottom > self.rect.top + 15:
-                return True
-        return False
+    def detectarColisao(self, rectJogador, fundo_anterior=None):
+        """Compatível com chamadas antigas e com detecção por cruzamento vertical."""
+        sobreposicao_horizontal = (
+            rectJogador.right > self.rect.left
+            and rectJogador.left < self.rect.right
+        )
+        if not sobreposicao_horizontal:
+            return False
+
+        if fundo_anterior is None:
+            return rectJogador.colliderect(self.rect) and rectJogador.bottom <= self.rect.top + 15
+
+        return fundo_anterior <= self.rect.top <= rectJogador.bottom

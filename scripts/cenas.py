@@ -30,35 +30,42 @@ dados_jogo = {
 class Menu:
     def __init__(self, tela):
         self.tela = tela
-        self.titulo = Texto(tela, "ESCAPE DOS TRIÂNGULOS", "centro", 60, (255, 20, 147), 40)
+        self.titulo = Texto(tela, "ESCAPE DOS TRIÂNGULOS", "centro", 50, (255, 20, 147), 40)
         
     def atualizar(self, eventos):
         self.titulo.desenhar()
         
-        y_pos = 130
+        y_pos = 120
         botoes = []
         
         if dados_jogo["nome"]:
-            btn_continuar = Botao(self.tela, f"CONTINUAR COMO {dados_jogo['nome']}", "centro", y_pos, 25, (20, 20, 20), (0, 255, 0))
+            btn_continuar = Botao(self.tela, f"CONTINUAR COMO {dados_jogo['nome']}", "centro", y_pos, 22, (20, 20, 20), (0, 255, 0))
             botoes.append(('partida', btn_continuar))
-            y_pos += 50
+            y_pos += 42
 
-        btn_jogar = Botao(self.tela, "NOVO JOGO", "centro", y_pos, 25, (20, 20, 20), (255, 20, 147))
+        btn_jogar = Botao(self.tela, "NOVO JOGO", "centro", y_pos, 22, (20, 20, 20), (255, 20, 147))
         botoes.append(('nome_input', btn_jogar))
-        y_pos += 50
+        y_pos += 42
 
         if dados_jogo["nome"]:
-            btn_trocar = Botao(self.tela, "TROCAR JOGADOR", "centro", y_pos, 22, (20, 20, 20), (255, 165, 0))
+            btn_trocar = Botao(self.tela, "TROCAR JOGADOR", "centro", y_pos, 20, (20, 20, 20), (255, 165, 0))
             botoes.append(('nome_input', btn_trocar))
-            y_pos += 50
+            y_pos += 42
 
-        btn_ranking = Botao(self.tela, "RANKING", "centro", y_pos, 25, (20, 20, 20), (0, 255, 255))
+        btn_ranking = Botao(self.tela, "RANKING", "centro", y_pos, 22, (20, 20, 20), (0, 255, 255))
         botoes.append(('ranking', btn_ranking))
-        y_pos += 50
+        y_pos += 42
 
-        # BOTÃO VISÍVEL DE ATALHO PARA A FASE 5
-        btn_teste_fase5 = Botao(self.tela, "TESTAR FASE 5 (DIRETO)", "centro", y_pos, 22, (20, 20, 20), (255, 255, 0))
-        botoes.append(('fase_5_direto', btn_teste_fase5))
+        btn_teste_fase6 = Botao(self.tela, "INICIAR FASE 6", "centro", y_pos, 20, (20, 20, 20), (255, 255, 0))
+        botoes.append(('fase_6_direto', btn_teste_fase6))
+        y_pos += 38
+
+        btn_teste_fase7 = Botao(self.tela, "INICIAR FASE 7", "centro", y_pos, 20, (20, 20, 20), (0, 255, 255))
+        botoes.append(('fase_7_direto', btn_teste_fase7))
+        y_pos += 38
+
+        btn_teste_fase8 = Botao(self.tela, "INICIAR FASE 8", "centro", y_pos, 20, (20, 20, 20), (0, 255, 0))
+        botoes.append(('fase_8_direto', btn_teste_fase8))
 
         for proxima_cena, botao in botoes:
             botao.desenhar()
@@ -121,10 +128,12 @@ class Partida:
         vel_fase = 8 + (self.fase_atual - 1)
         
         if self.fase_atual == 1:
+            # Velocidade 8
             layout = [(Triangulo, x) for x in [800, 1400, 2000, 2600, 3100, 3600, 4100, 4600, 5200, 5800, 6400]]
             fim = 7000
 
         elif self.fase_atual == 2:
+            # Velocidade 9
             layout = [(Triangulo, 800), (Triangulo, 1200), (Triangulo, 1230),
                       (Buraco, 1700, 80), (Triangulo, 2100), (Triangulo, 2130),
                       (Buraco, 2600, 90), (Bloco, 3000), (Triangulo, 3400),
@@ -134,6 +143,7 @@ class Partida:
             fim = 6800
 
         elif self.fase_atual == 3:
+            # Velocidade 10
             layout = [
                 (Bloco, 800), (Plataforma, 1200, 240, 150), (Buraco, 1200, 150), 
                 (Triangulo, 1800), (Triangulo, 1830), (Triangulo, 1860), 
@@ -147,6 +157,7 @@ class Partida:
             fim = 6900
 
         elif self.fase_atual == 4:
+            # Velocidade 11
             layout = [
                 (Triangulo, 800), (Buraco, 1100, 130), (Plataforma, 1160, 240, 50),
                 (Bloco, 1600), (Triangulo, 1630), (Triangulo, 2000), (Triangulo, 2030), (Triangulo, 2060), (Triangulo, 2090), 
@@ -160,37 +171,131 @@ class Partida:
             fim = 6200
 
         elif self.fase_atual == 5:
+            # Velocidade 12 (Distância de salto = 32 * 12 = 384px)
             layout = [
-                (Bloco, 800), (Buraco, 830, 150), (Plataforma, 920, 240, 60),
+                (Bloco, 800), (Buraco, 830, 150), (Plataforma, 920, 240, 120),
                 (Triangulo, 1350), (Triangulo, 1380), (Triangulo, 1410),
-                
-                # 1ª Plataforma longa
-                (Plataforma, 1800, 240, 350), (Triangulo, 2050, 240), 
-                (Buraco, 1800, 350), 
-                
+                (Plataforma, 1800, 240, 360), (Triangulo, 2050, 240), 
+                (Buraco, 1800, 360), 
                 (Bloco, 2600), (Bloco, 2630), (Triangulo, 2660),
-                (Buraco, 3100, 250), (Plataforma, 3150, 240, 50), (Plataforma, 3280, 240, 50), 
-                (Triangulo, 3700), (Triangulo, 3730), (Triangulo, 3760), (Triangulo, 3790),
-                (Bloco, 4200), 
+                (Buraco, 3100, 250), (Plataforma, 3150, 240, 100), (Plataforma, 3360, 240, 100), 
+                (Triangulo, 3800), (Triangulo, 3830), (Triangulo, 3860), (Triangulo, 3890),
+                (Bloco, 4300), 
                 
-                # ESCADINHA COM O TERCEIRO DEGRAU MAIS AFASTADO À DIREITA
-                (Buraco, 4300, 200),         # Buraco inicial
-                (Plataforma, 4500, 275, 60),  # Degrau 1
-                (Plataforma, 4820, 255, 60),  # Degrau 2
-                (Plataforma, 5220, 235, 60),  # Degrau 3 (afastado um pouco mais para a direita)
-                (Plataforma, 5580, 220, 300), # Plataforma Principal ajustada proporcionalmente
-                (Triangulo, 5740, 220), 
-                (Triangulo, 5920, 220),
-                (Buraco, 4500, 1250),         # Buraco cobrindo toda a área expandida da escadinha
+                # Escadinha calibrada (largura 160px, passo 380px)
+                (Buraco, 4400, 200), 
+                (Plataforma, 4600, 275, 160),  
+                (Plataforma, 4980, 255, 160),  
+                (Plataforma, 5360, 235, 160),  
+                (Plataforma, 5740, 215, 420),
+                (Triangulo, 5900, 215), 
+                (Triangulo, 6060, 215),
+                (Buraco, 4600, 1500), 
                 
-                # Percurso após a descida da escada
-                (Triangulo, 6430), (Triangulo, 6460), (Triangulo, 6490),
-                (Plataforma, 6930, 230, 80), (Triangulo, 6950), (Triangulo, 6980),
-                (Buraco, 7430, 200), (Plataforma, 7480, 240, 60),
-                (Bloco, 7930), (Buraco, 7960, 160), (Triangulo, 8280) 
+                (Triangulo, 6550), (Triangulo, 6580), (Triangulo, 6610),
+                (Plataforma, 7050, 230, 120), (Triangulo, 7080), (Triangulo, 7110),
+                (Buraco, 7550, 200), (Plataforma, 7600, 240, 120),
+                (Bloco, 8100), (Buraco, 8130, 160), (Triangulo, 8500) 
             ]
-            fim = 8530
+            fim = 8800
 
+        elif self.fase_atual == 6:
+            # Velocidade 13 (salto no mesmo nível: 34 frames * 13 = 442px)
+            layout = [
+                (Bloco, 900), (Buraco, 930, 240), (Plataforma, 1170, 240, 200),
+                (Triangulo, 1900), (Triangulo, 1930), (Triangulo, 1960),
+                
+                # 2ª Plataforma Roxa (2670..3090): os triângulos ficam mais próximos
+                # para permitir um único salto. O 2º foi antecipado de 2970 para 2890,
+                # deixando mais espaço de reação antes da borda da plataforma.
+                (Buraco, 2450, 220),
+                (Plataforma, 2670, 240, 420),
+                (Triangulo, 2810, 240),
+                (Triangulo, 2890, 240),
+                # Salto calibrado para velocidade 13: 34 frames no ar = 442 px.
+                # A plataforma seguinte começa em 3180 para já estar sob o jogador
+                # no pouso, mesmo após iniciar o salto antes do 1º triângulo.
+                (Buraco, 3090, 90),
+                (Plataforma, 3180, 240, 220), 
+                
+                (Triangulo, 4100), (Triangulo, 4130),
+                
+                # Escadinha de 4 degraus calibrada para velocidade 13 (largura 180px, passo 416px)
+                (Plataforma, 4850, 265, 180), 
+                (Plataforma, 5266, 245, 180), 
+                (Plataforma, 5682, 225, 180), 
+                (Plataforma, 6098, 205, 420),
+                # Os dois triângulos ficam mais para a direita da plataforma.
+                # Quando o jogador aterrissa, há aproximadamente 22 e 28 frames
+                # até cada colisão, dando tempo para iniciar um único salto.
+                # Ambos continuam inteiramente apoiados na plataforma.
+                (Triangulo, 6400, 205),
+                (Triangulo, 6480, 205),
+                (Buraco, 4750, 1850),
+                
+                (Triangulo, 7150), (Triangulo, 7180), (Triangulo, 7210), (Triangulo, 7240),
+                (Buraco, 7700, 250), (Plataforma, 7950, 240, 180),
+                (Bloco, 8500), (Buraco, 8530, 230), (Triangulo, 9050)
+            ]
+            fim = 9500
+
+        elif self.fase_atual == 7:
+            # Velocidade 14 (Distância de salto = 32 * 14 = 448px)
+            layout = [
+                (Triangulo, 950), (Triangulo, 980), 
+                (Buraco, 1500, 280), (Plataforma, 1780, 245, 220), (Triangulo, 1880, 245),
+                (Buraco, 2000, 250), (Plataforma, 2250, 220, 220), (Triangulo, 2350, 220),
+                (Bloco, 3050), 
+                (Triangulo, 3600), (Triangulo, 3630), (Triangulo, 3660),
+                
+                # Escadinha calibrada para velocidade 14 (passo 448px).
+                # Do 2º para o 3º degrau, o personagem leva 32 frames para subir
+                # 25px; nesse intervalo o cenário percorre exatamente 448px.
+                (Plataforma, 4300, 260, 190),
+                (Plataforma, 4748, 235, 190),
+                # Plataforma final ampliada para dar tempo de reação aos dois
+                # triângulos. No pior alinhamento ainda válido da plataforma
+                # anterior, eles alcançam o jogador nos frames 20 e 24 após o pouso.
+                (Plataforma, 5196, 210, 590),
+                (Triangulo, 5696, 210),
+                (Triangulo, 5746, 210),
+                (Buraco, 4200, 1550),
+                
+                (Bloco, 6300), (Triangulo, 6850), (Triangulo, 6880), (Triangulo, 6910), (Triangulo, 6940), (Triangulo, 6970),
+                (Buraco, 7450, 300), (Plataforma, 7750, 240, 240), (Triangulo, 7870, 240),
+                (Bloco, 8450)
+            ]
+            fim = 8950
+
+        elif self.fase_atual == 8:
+            # Velocidade 15 (Distância de salto = 32 * 15 = 480px)
+            layout = [
+                (Bloco, 950), (Buraco, 980, 300), (Plataforma, 1280, 245, 200),
+                (Buraco, 1480, 280), (Plataforma, 1760, 225, 200),
+                (Buraco, 1960, 280), (Plataforma, 2240, 205, 450),
+                (Triangulo, 2380, 205), (Triangulo, 2550, 205),
+                (Buraco, 3150, 320), (Bloco, 3470),
+                (Triangulo, 4050), (Triangulo, 4080), (Triangulo, 4110), (Triangulo, 4140),
+                
+                # Escadinha final: cada degrau está 480 px adiante. Com velocidade
+                # 15, o salto até o próximo nível leva 32 frames (32 * 15 = 480).
+                (Plataforma, 4800, 265, 200),
+                (Plataforma, 5280, 245, 200),
+                (Plataforma, 5760, 225, 200),
+                # Plataforma final ampliada para oferecer tempo de reação aos dois
+                # triângulos. Os obstáculos ficam no lado direito, mas inteiramente
+                # apoiados na plataforma.
+                (Plataforma, 6240, 205, 640),
+                (Triangulo, 6770, 205),  # offset 530
+                (Triangulo, 6830, 205),  # offset 590
+                (Buraco, 4700, 2100),
+                
+                (Bloco, 7400), (Triangulo, 7980), (Triangulo, 8010), (Triangulo, 8040), (Triangulo, 8070), (Triangulo, 8100),
+                (Buraco, 8600, 320), (Plataforma, 8920, 240, 220), (Triangulo, 9030, 240),
+                (Buraco, 9140, 300), (Bloco, 9440), (Triangulo, 10050)
+            ]
+            fim = 10500
+            
         for Tipo, x, *args in layout:
             if Tipo == Plataforma:
                 self.obstaculos.append(Plataforma(self.tela, x, args[0], args[1], velocidade=vel_fase))
@@ -250,7 +355,7 @@ class Partida:
         self.desenhar_cenario()
         self.jogador.desenhar()
         
-        hud = f"Fase: {self.fase_atual}/5 | {dados_jogo['nome']} | Pts: {dados_jogo['pontos']} | Mortes: {dados_jogo['mortes']} | Tempo: {tempo_segundos}s"
+        hud = f"Fase: {self.fase_atual}/8 | {dados_jogo['nome']} | Pts: {dados_jogo['pontos']} | Mortes: {dados_jogo['mortes']} | Tempo: {tempo_segundos}s"
         self.texto_hud.atualizarTexto(hud)
         self.texto_hud.desenhar()
         self.texto_dicas.desenhar()
@@ -279,7 +384,7 @@ class Partida:
         
         if self.linha_chegada.x < self.jogador.rect.x:
             dados_jogo["pontos"] += 100 
-            if self.fase_atual < 5:
+            if self.fase_atual < 8:
                 self.salvar_ranking()
                 self.fase_atual += 1
                 self.reiniciar_fase()
